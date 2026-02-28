@@ -107,6 +107,13 @@ def get_artwork_url(
         # and the resulting URL will pull the primary album art even if the tag is not specified.
         artwork_type = "Primary"
         artwork_id = item["AlbumId"]
+    elif "SeriesPrimaryImageTag" in item:
+        if "SeasonId" in item:
+            artwork_type = "Primary"
+            artwork_id = item["SeasonId"]
+        else:
+            artwork_type = "Primary"
+            artwork_id = item["SeriesId"]
     elif "Primary" in item[ITEM_KEY_IMAGE_TAGS]:
         artwork_type = "Primary"
         artwork_id = item["Id"]
