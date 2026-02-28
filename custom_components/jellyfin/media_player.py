@@ -167,6 +167,7 @@ class JellyfinMediaPlayer(JellyfinClientEntity, MediaPlayerEntity):
         self._attr_media_position = media_position
         self._attr_media_position_updated_at = media_position_updated
         self._attr_media_image_remotely_accessible = True
+        self._attr_extra_state_attributes = self._get_transcoding_info()
 
     @property
     def media_image_url(self) -> str | None:
@@ -179,6 +180,32 @@ class JellyfinMediaPlayer(JellyfinClientEntity, MediaPlayerEntity):
         return get_artwork_url(
             self.coordinator.api_client, self.now_playing, MAX_IMAGE_WIDTH
         )
+
+    def _get_transcoding_info(self) -> dict[str, Any] | None:
+        """Get transcoding information from session data."""
+        if not self.available:
+            return None
+
+        transcoding_info = self.session_data.get("TranscodingInfo")
+        if transcoding_info is None:
+            return None
+
+        is_active = self.session_data.get("IsActive", False)
+
+        return {
+            "transcoding_active": is_active,
+            "transcoding_container": transcoding_info.get("Container"),
+            "transcoding_codec": transcoding_info.get("VideoCodec"),
+            "transcoding_audio_codec": transcoding_info.get("AudioCodec"),
+            "transcoding_bitrate": transcoding_info.get("Bitrate"),
+            "transcoding_framerate": transcoding_info.get("Framerate"),
+            "transcoding_completion_percentage": transcoding_info.get("CompletionPercentage"),
+            "transcoding_width": transcoding_info.get("Width"),
+            "transcoding_height": transcoding_info.get("Height"),
+            "transcoding_is_video_direct": transcoding_info.get("IsVideoDirect"),
+            "transcoding_is_audio_direct": transcoding_info.get("IsAudioDirect"),
+            "transcoding_reasons": transcoding_info.get("TranscodeReasons"),
+        }
 
     @property
     def supported_features(self) -> MediaPlayerEntityFeature:
