@@ -51,7 +51,7 @@ class JellyfinClientEntity(JellyfinEntity):
                 identifiers={(DOMAIN, self.device_id)},
                 manufacturer="Jellyfin",
                 model=self.client_name,
-                name=self.device_name,
+                name=f"Jellyfin ({self.user_name} - {self.device_name})",
                 sw_version=self.app_version,
                 via_device=(DOMAIN, coordinator.server_id),
             )
