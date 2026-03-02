@@ -2,9 +2,10 @@
 
 A custom Jellyfin integration for Home Assistant that overrides the built-in version.
 
-The only difference is it makes the friendly_name look more like what the plex integration produces, for consistency in my [now-playing](https://github.com/XanderStrike/now-playing) card:
+Differences:
 
-<img width="397" height="699" alt="image" src="https://github.com/user-attachments/assets/20d75954-010b-44b6-ba2a-761e8bc30a1d" />
+- Username included in friendly_name
+- Additional transcoding attributes on media_player entity
 
 ## Installation via HACS
 
