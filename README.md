@@ -6,6 +6,9 @@ Differences:
 
 - Username included in friendly_name
 - Additional transcoding attributes on media_player entity
+- Poster/poster precedence tweaks (series & season posters, primary art before backdrop)
+
+Built on top of the latest upstream Jellyfin integration, including its HTTPS artwork proxying.
 
 ## Installation via HACS
 
