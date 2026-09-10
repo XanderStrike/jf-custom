@@ -111,13 +111,15 @@ def get_artwork_url(
         if "SeasonId" in item:
             artwork_type = "Primary"
             artwork_id = item["SeasonId"]
-        else:
+        elif "SeriesId" in item:
             artwork_type = "Primary"
             artwork_id = item["SeriesId"]
-    elif "Primary" in item[ITEM_KEY_IMAGE_TAGS]:
+        else:
+            return None
+    elif "Primary" in item.get(ITEM_KEY_IMAGE_TAGS, {}):
         artwork_type = "Primary"
         artwork_id = item["Id"]
-    elif "Backdrop" in item[ITEM_KEY_IMAGE_TAGS]:
+    elif "Backdrop" in item.get(ITEM_KEY_IMAGE_TAGS, {}):
         artwork_type = "Backdrop"
         artwork_id = item["Id"]
     elif parent_backdrop_id:

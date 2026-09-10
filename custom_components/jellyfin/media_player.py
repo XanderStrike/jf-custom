@@ -185,25 +185,27 @@ class JellyfinMediaPlayer(JellyfinClientEntity, MediaPlayerEntity):
 
     def _get_transcoding_info(self) -> dict[str, Any] | None:
         """Get transcoding information from session data."""
-        if not self.available:
+        if not self.available or self.now_playing is None:
             return None
 
         transcoding_info = self.session_data.get("TranscodingInfo")
         if transcoding_info is None:
             return None
 
-        is_active = self.session_data.get("IsActive", False)
+        play_method = (self.play_state or {}).get("PlayMethod")
+        is_transcoding = play_method == "Transcode"
 
         return {
-            "transcoding_active": is_active,
+            "transcoding_active": is_transcoding,
+            "transcoding_play_method": play_method,
             "transcoding_container": transcoding_info.get("Container"),
             "transcoding_codec": transcoding_info.get("VideoCodec"),
             "transcoding_audio_codec": transcoding_info.get("AudioCodec"),
-            "transcoding_bitrate": transcoding_info.get("Bitrate"),
-            "transcoding_framerate": transcoding_info.get("Framerate"),
-            "transcoding_completion_percentage": transcoding_info.get(
-                "CompletionPercentage"
+            "transcoding_audio_channels": transcoding_info.get("AudioChannels"),
+            "transcoding_hardware_acceleration": transcoding_info.get(
+                "HardwareAccelerationType"
             ),
+            "transcoding_bitrate": transcoding_info.get("Bitrate"),
             "transcoding_width": transcoding_info.get("Width"),
             "transcoding_height": transcoding_info.get("Height"),
             "transcoding_is_video_direct": transcoding_info.get("IsVideoDirect"),

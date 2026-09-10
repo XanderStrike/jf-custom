@@ -2,6 +2,7 @@
 
 from typing import Any, override
 
+from homeassistant.helpers import device_registry as dr
 from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
@@ -41,7 +42,9 @@ class JellyfinClientEntity(JellyfinEntity):
         self.device_name: str = self.session_data["DeviceName"]
         self.client_name: str = self.session_data["Client"]
         self.app_version: str = self.session_data["ApplicationVersion"]
-        self.user_name: str = self.session_data["UserName"]
+        self.user_name: str = (
+            self.session_data.get("UserName") or self.session_data["DeviceName"]
+        )
         self.capabilities: dict[str, Any] = self.session_data["Capabilities"]
 
         if self.capabilities.get("SupportsPersistentIdentifier", False):
@@ -51,7 +54,11 @@ class JellyfinClientEntity(JellyfinEntity):
                 model=self.client_name,
                 name=f"Jellyfin ({self.user_name} - {self.device_name})",
                 sw_version=self.app_version,
-                via_device=(DOMAIN, coordinator.server_id),
+                via_device_id=dr.async_get_device_id_by_identifier(
+                    coordinator.hass,
+                    (DOMAIN, coordinator.server_id),
+                    config_entry_id=coordinator.config_entry.entry_id,
+                ),
             )
             self._attr_name = None
         else:
